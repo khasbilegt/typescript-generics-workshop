@@ -2,8 +2,8 @@ import { expect, it } from "vitest";
 import { Equal, Expect } from "../helpers/type-utils";
 
 export const compose =
-  (...funcs: Array<(input: any) => any>) =>
-  (input: any) => {
+  <TInput, TReturn>(...funcs: Array<(input: TInput) => TReturn>) =>
+  (input: TInput) => {
     return funcs.reduce((acc, fn) => fn(acc), input);
   };
 
@@ -27,6 +27,6 @@ it("Should error when the input to a function is not typed correctly", () => {
     // a function that returns a string!
     // @ts-expect-error
     String,
-    addOne,
+    addOne
   );
 });

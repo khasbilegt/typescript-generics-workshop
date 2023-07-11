@@ -1,19 +1,33 @@
 import { expect, it } from "vitest";
 import { Equal, Expect } from "../helpers/type-utils";
 
+// const makeSafe =
+//   <T extends any[], R>(func: (...args: T) => R) =>
+//   (
+//     ...args: T
+//   ): { type: "success"; result: R } | { type: "failure"; error: Error } => {
+//     try {
+//       const result = func(...args);
+
+//       return {
+//         type: "success",
+//         result,
+//       };
+//     } catch (e) {
+//       return {
+//         type: "failure",
+//         error: e as Error,
+//       };
+//     }
+//   };
+
 const makeSafe =
-  (func: unknown) =>
+  <T extends (...args: any[]) => any>(func: T) =>
   (
-    ...args: unknown
+    ...args: Parameters<T>
   ):
-    | {
-        type: "success";
-        result: unknown;
-      }
-    | {
-        type: "failure";
-        error: Error;
-      } => {
+    | { type: "success"; result: ReturnType<T> }
+    | { type: "failure"; error: Error } => {
     try {
       const result = func(...args);
 
@@ -52,7 +66,7 @@ it("Should return the result with a { type: 'success' } on a successful call", (
             error: Error;
           }
       >
-    >,
+    >
   ];
 });
 
@@ -84,7 +98,7 @@ it("Should return the error on a thrown call", () => {
             error: Error;
           }
       >
-    >,
+    >
   ];
 });
 

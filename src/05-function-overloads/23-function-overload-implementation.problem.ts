@@ -15,6 +15,7 @@ interface AdminPrivileges extends UserPrivileges {
 
 function getRolePrivileges(role: "admin"): AdminPrivileges;
 function getRolePrivileges(role: "user"): UserPrivileges;
+function getRolePrivileges(role: string): AnonymousPrivileges;
 function getRolePrivileges(role: string): AnonymousPrivileges {
   switch (role) {
     case "admin":
@@ -22,28 +23,27 @@ function getRolePrivileges(role: string): AnonymousPrivileges {
         sitesCanDelete: [],
         sitesCanEdit: [],
         sitesCanVisit: [],
-      };
+      } as AdminPrivileges;
     case "user":
       return {
         sitesCanEdit: [],
         sitesCanVisit: [],
-      };
+      } as UserPrivileges;
     default:
       return {
         sitesCanVisit: [],
-      };
+      } as AnonymousPrivileges;
   }
 }
 
 it("Should return the correct privileges", () => {
   const adminPrivileges = getRolePrivileges("admin");
-
   const userPrivileges = getRolePrivileges("user");
   const anonymousPrivileges = getRolePrivileges("anonymous");
 
   type tests = [
     Expect<Equal<typeof adminPrivileges, AdminPrivileges>>,
     Expect<Equal<typeof userPrivileges, UserPrivileges>>,
-    Expect<Equal<typeof anonymousPrivileges, AnonymousPrivileges>>,
+    Expect<Equal<typeof anonymousPrivileges, AnonymousPrivileges>>
   ];
 });
